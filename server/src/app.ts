@@ -13,7 +13,7 @@ const app = express();
 // CORS (Cross-Origin Resource Sharing) is a security mechanism in web browsers that blocks requests from a different domain than the server.
 // You may find the following magic line in forums:
 
-// app.use(cors());
+app.use(cors());
 
 // You should NOT do that: such code uses the `cors` module to allow all origins, which can pose security issues.
 // For this pedagogical template, the CORS code allows CLIENT_URL in development mode (when process.env.CLIENT_URL is defined).
@@ -52,8 +52,8 @@ app.use(
 
 // Uncomment one or more of these options depending on the format of the data sent by your client:
 
-// app.use(express.json());
-// app.use(express.urlencoded());
+app.use(express.json());
+app.use(express.urlencoded());
 // app.use(express.text());
 // app.use(express.raw());
 
@@ -101,6 +101,21 @@ if (fs.existsSync(clientBuildPath)) {
 }
 
 /* ************************************************************************* */
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"], // 🔥 Autorise seulement ton frontend
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  }),
+);
+// Import the contact routes
+
+app.use("/api", router); // Route API
+
+app.listen(3310, () => {
+  console.info("Serveur démarré sur http://localhost:3310");
+});
 
 // Middleware for Error Logging
 // Important: Error-handling middleware should be defined last, after other app.use() and routes calls.
